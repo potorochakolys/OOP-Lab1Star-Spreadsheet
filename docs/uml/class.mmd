@@ -1,0 +1,121 @@
+---
+title: ЛР1* (варіант 6). Діаграма класів
+---
+classDiagram
+    direction LR
+
+    class MainPage {
+        -SpreadsheetWorkbook _workbook
+        -LocalFileStorage _localStorage
+        -GoogleDriveStorage _driveStorage
+        -BuildGrid()
+        -RefreshCells()
+        +ConfirmExitAsync() Task~bool~
+    }
+
+    class DisplayMode {
+        <<enumeration>>
+        Expression
+        Value
+    }
+
+    class SpreadsheetWorkbook {
+        +SpreadsheetTable Table
+        +DisplayMode Mode
+        +bool HasUnsavedChanges
+        +SetExpression(row, col, expr)
+        +AddRow()
+        +AddColumn()
+        +RemoveLastRow()
+        +RemoveLastColumn()
+        +OpenAsync(storage, file)
+        +SaveAsync()
+        +SaveAsAsync(storage, name)
+    }
+
+    class SpreadsheetTable {
+        +int RowCount
+        +int ColumnCount
+        +GetCell(row, col) Cell
+        +SetExpression(name, expr)
+        +Recalculate()
+        +ToDocument() SpreadsheetDocument
+        +FromDocument(doc)$ SpreadsheetTable
+    }
+
+    class Cell {
+        +CellAddress Address
+        +string Expression
+        +double? Value
+        +string? Error
+        +ISet~string~ References
+        +string DisplayValue
+    }
+
+    class CellAddress {
+        <<struct>>
+        +int Column
+        +int Row
+        +string Name
+        +ColumnName(i)$ string
+        +TryParse(name, out addr)$ bool
+    }
+
+    class ExpressionEvaluator {
+        <<static>>
+        +Parse(expr)
+        +GetReferences(expr) ISet~string~
+        +Evaluate(expr, cellValue) double
+    }
+
+    class EvaluationVisitor {
+        +VisitAdditiveExpr()
+        +VisitMultiplicativeExpr()
+        +VisitExponentialExpr()
+        +VisitMaxMinExpr()
+        +VisitIdentifierExpr()
+    }
+
+    class SpreadsheetBaseVisitor~double~ {
+        <<ANTLR>>
+    }
+    class SpreadsheetLexer {
+        <<ANTLR>>
+    }
+    class SpreadsheetParser {
+        <<ANTLR>>
+    }
+
+    class ISpreadsheetStorage {
+        <<interface>>
+        +string DisplayName
+        +ListAsync()
+        +SaveAsync(name, doc, id)
+        +LoadAsync(id) SpreadsheetDocument
+    }
+    class LocalFileStorage
+    class GoogleDriveStorage {
+        -string credentialsPath
+        -GetServiceAsync() DriveService
+    }
+    class SpreadsheetDocument {
+        +int Rows
+        +int Columns
+        +Dictionary~string,string~ Cells
+    }
+
+    MainPage --> SpreadsheetWorkbook
+    MainPage ..> ISpreadsheetStorage
+    SpreadsheetWorkbook *-- SpreadsheetTable
+    SpreadsheetWorkbook --> DisplayMode
+    SpreadsheetTable "1" *-- "*" Cell
+    Cell *-- CellAddress
+    SpreadsheetTable ..> ExpressionEvaluator
+    SpreadsheetTable ..> SpreadsheetDocument
+    ExpressionEvaluator ..> SpreadsheetLexer
+    ExpressionEvaluator ..> SpreadsheetParser
+    ExpressionEvaluator ..> EvaluationVisitor
+    EvaluationVisitor --|> SpreadsheetBaseVisitor~double~
+    ISpreadsheetStorage <|.. LocalFileStorage
+    ISpreadsheetStorage <|.. GoogleDriveStorage
+    ISpreadsheetStorage ..> SpreadsheetDocument

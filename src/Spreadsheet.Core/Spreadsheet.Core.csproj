@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Spreadsheet.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
+    <PackageReference Include="Antlr4BuildTasks" Version="12.8.0" PrivateAssets="all" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.68.0.3533" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Antlr4 Include="Grammar\Spreadsheet.g4">
+      <Package>Spreadsheet.Core.Grammar</Package>
+      <Visitor>true</Visitor>
+      <Listener>false</Listener>
+      <Error>true</Error>
+    </Antlr4>
+  </ItemGroup>
+
+</Project>

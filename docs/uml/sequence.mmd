@@ -1,0 +1,43 @@
+---
+title: ЛР1* (варіант 6). Діаграма послідовності — введення виразу в клітинку
+---
+sequenceDiagram
+    autonumber
+    actor U as Користувач
+    participant P as MainPage
+    participant W as SpreadsheetWorkbook
+    participant T as SpreadsheetTable
+    participant E as ExpressionEvaluator
+    participant V as EvaluationVisitor
+
+    U->>P: вводить "max(A1, 3) ^ 2 mod 7" у B1, Enter
+    P->>W: SetExpression(0, 1, expr)
+    W->>T: SetExpression(0, 1, expr)
+    T->>T: Recalculate()
+    loop для кожної непорожньої клітинки
+        T->>E: GetReferences(expression)
+        E->>E: Parse() — лексер і парсер ANTLR
+        alt синтаксична помилка
+            E-->>T: SyntaxException
+            T->>T: cell.Error = повідомлення
+        else вираз коректний
+            E-->>T: {A1}
+        end
+    end
+    loop кожна клітинка (пошук у глибину)
+        T->>E: Evaluate(expression, cellValueProvider)
+        E->>V: Visit(tree)
+        V->>T: значення A1 (рекурсивно)
+        alt A1 вже «в обробці»
+            T-->>V: EvaluationException (цикл)
+        else
+            T-->>V: 5
+        end
+        V-->>E: 4
+        E-->>T: 4
+        T->>T: cell.Value = 4
+    end
+    T-->>W: Recalculated
+    W-->>P: Changed
+    P->>P: RefreshCells()
+    P-->>U: у режимі «Значення» B1 = 4

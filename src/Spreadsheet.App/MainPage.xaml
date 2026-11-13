@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spreadsheet.App.MainPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="White">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="8" RowSpacing="6">
+
+        <!-- Панель команд -->
+        <FlexLayout Grid.Row="0" Wrap="Wrap" AlignItems="Center">
+            <FlexLayout.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Margin" Value="0,0,6,6" />
+                    <Setter Property="Padding" Value="10,4" />
+                    <Setter Property="FontSize" Value="13" />
+                    <Setter Property="BackgroundColor" Value="#1F6FB2" />
+                    <Setter Property="TextColor" Value="White" />
+                </Style>
+            </FlexLayout.Resources>
+            <Button Text="Нова" Clicked="OnNewClicked" ToolTipProperties.Text="Створити нову таблицю" />
+            <Button Text="Відкрити…" Clicked="OnOpenLocalClicked" ToolTipProperties.Text="Відкрити таблицю з диска" />
+            <Button Text="Зберегти" Clicked="OnSaveClicked" />
+            <Button Text="Зберегти як…" Clicked="OnSaveAsLocalClicked" />
+            <Button Text="Відкрити з Google Drive" Clicked="OnOpenDriveClicked" BackgroundColor="#188038" />
+            <Button Text="Зберегти на Google Drive" Clicked="OnSaveDriveClicked" BackgroundColor="#188038" />
+            <Button Text="+ Рядок" Clicked="OnAddRowClicked" BackgroundColor="#5F6368" />
+            <Button Text="− Рядок" Clicked="OnRemoveRowClicked" BackgroundColor="#5F6368" />
+            <Button Text="+ Стовпець" Clicked="OnAddColumnClicked" BackgroundColor="#5F6368" />
+            <Button Text="− Стовпець" Clicked="OnRemoveColumnClicked" BackgroundColor="#5F6368" />
+            <Button Text="Довідка" Clicked="OnHelpClicked" BackgroundColor="#8E44AD" />
+            <Button Text="Вихід" Clicked="OnExitClicked" BackgroundColor="#C0392B" />
+        </FlexLayout>
+
+        <!-- Режим відображення -->
+        <HorizontalStackLayout Grid.Row="1" Spacing="10">
+            <Label Text="Режим:" VerticalOptions="Center" FontAttributes="Bold" TextColor="Black" />
+            <RadioButton x:Name="ValueModeRadio" Content="Значення" IsChecked="True" GroupName="mode" CheckedChanged="OnModeChanged" TextColor="Black" />
+            <RadioButton x:Name="ExpressionModeRadio" Content="Вираз" GroupName="mode" CheckedChanged="OnModeChanged" TextColor="Black" />
+        </HorizontalStackLayout>
+
+        <!-- Рядок формул -->
+        <Grid Grid.Row="2" ColumnDefinitions="60,*,Auto" ColumnSpacing="6">
+            <Label x:Name="SelectedCellLabel" Text="A1" FontAttributes="Bold" VerticalOptions="Center"
+                   HorizontalTextAlignment="Center" TextColor="Black" BackgroundColor="#EEEEEE" Padding="4" />
+            <Entry x:Name="FormulaEntry" Grid.Column="1" Placeholder="Вираз, наприклад: max(A1, B2) ^ 2 mod 7"
+                   Completed="OnFormulaCompleted" TextColor="Black" />
+            <Button Grid.Column="2" Text="Застосувати" Clicked="OnFormulaCompleted" />
+        </Grid>
+
+        <!-- Таблиця -->
+        <ScrollView Grid.Row="3" Orientation="Both">
+            <Grid x:Name="CellsGrid" RowSpacing="1" ColumnSpacing="1" BackgroundColor="#C8C8C8"
+                  HorizontalOptions="Start" VerticalOptions="Start" Padding="1" />
+        </ScrollView>
+
+        <Label x:Name="StatusLabel" Grid.Row="4" TextColor="#444444" FontSize="13" />
+    </Grid>
+</ContentPage>
