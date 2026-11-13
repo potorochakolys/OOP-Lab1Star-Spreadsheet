@@ -18,8 +18,8 @@
                     <Setter Property="TextColor" Value="White" />
                 </Style>
             </FlexLayout.Resources>
-            <Button Text="Нова" Clicked="OnNewClicked" ToolTipProperties.Text="Створити нову таблицю" />
-            <Button Text="Відкрити…" Clicked="OnOpenLocalClicked" ToolTipProperties.Text="Відкрити таблицю з диска" />
+            <Button Text="Нова" Clicked="OnNewClicked" />
+            <Button Text="Відкрити…" Clicked="OnOpenLocalClicked" />
             <Button Text="Зберегти" Clicked="OnSaveClicked" />
             <Button Text="Зберегти як…" Clicked="OnSaveAsLocalClicked" />
             <Button Text="Відкрити з Google Drive" Clicked="OnOpenDriveClicked" BackgroundColor="#188038" />

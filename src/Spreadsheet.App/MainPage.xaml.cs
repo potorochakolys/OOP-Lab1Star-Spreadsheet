@@ -115,6 +115,7 @@ public partial class MainPage : ContentPage
 
     private void SelectCell(int row, int column)
     {
+        if (!IsInsideTable(row, column)) return;
         _selected = (row, column);
         ShowSelectedCell();
     }
@@ -129,9 +130,13 @@ public partial class MainPage : ContentPage
             : $"{cell.Name} = {(cell.IsEmpty ? "порожня" : cell.DisplayValue)}   |   {_workbook.CurrentLocation ?? "файл не збережено"}";
     }
 
+    private bool IsInsideTable(int row, int column)
+        => row < _workbook.Table.RowCount && column < _workbook.Table.ColumnCount;
+
     private void CommitCellEntry(int row, int column, Entry entry)
     {
-        if (_workbook.Mode != DisplayMode.Expression) return;
+        // Поле видаленого рядка/стовпця може втратити фокус уже після перебудови сітки
+        if (_workbook.Mode != DisplayMode.Expression || !IsInsideTable(row, column)) return;
         ApplyExpression(row, column, entry.Text);
     }
 
